@@ -80,9 +80,9 @@
             with_items:
                     - sshd
                     - ufw
-                      #          - name: reboot machine, wait 120 s
-                      #            reboot:
-                      #                    reboot_timeout: 120
+          - name: reboot machine, wait 120 s
+            reboot:
+                    reboot_timeout: 120
           ###PART 2#####
           - name: install docker py
             pip:
