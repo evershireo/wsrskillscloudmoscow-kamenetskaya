@@ -1,8 +1,8 @@
 - hosts: servers
   tasks:
-          - name: add vault vars
-            include_vars:
-                    file: Users/privvars.yml
+          #- name: add vault vars
+          #  include_vars:
+          #          file: Users/privvars.yml
           - name: change ssh port
             lineinfile:
                     path: /etc/ssh/sshd_config
