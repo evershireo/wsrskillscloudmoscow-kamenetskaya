@@ -1,0 +1,83 @@
+- hosts: servers
+  tasks:
+          - name: add vault vars
+            include_vars:
+                    file: Users/privvars.yml
+          - name: change ssh port
+            lineinfile:
+                    path: /etc/ssh/sshd_config
+                    insertafter: EOF
+                    line: "{{ item }}"
+            with_items:
+              - "PubkeyAuthentication yes"
+              - "Port 1467"
+          - name: restart ssh
+            service:
+                    name: sshd
+                    state: restarted
+          - name: change ssh port to 1467
+            set_fact:
+                    ansible_port: 1467
+          - name: update pkg and install curl
+            apt:
+                    update_cache: true
+                    name: curl
+
+          - name: Allow port 80
+            ufw:
+                    rule: allow
+                    port: 80
+                    proto: tcp
+
+          - name: Allow port 8888
+            ufw:
+                    rule: allow
+                    port: 8888
+                    proto: tcp
+
+          - name: Allow port 1467
+            ufw:
+                    rule: allow
+                    port: 1467
+                    proto: tcp
+
+          - name: Activate UFW
+            ufw:
+                    state: enabled
+                    policy: deny
+
+                    #     - name: add users
+                    #   user:
+                    # name: "{{ users }}"
+                    #shell: /bin/bash
+                    #password: "{{ passwords }}"
+                    #ssh_public_key: "{{ publickey }}" 
+          - name: install docker
+            apt:
+                    name:
+                            - docker
+                            - docker.io
+          - name: create directory
+            file:
+                    path: /skillcloud-ngsite
+                    state: directory
+          - name: copy
+            copy:
+                    src: files/
+                    dest: /skillcloud-ngsite/
+          - name: restart ssh and ufw
+            service:
+                    name: "{{ item }}"
+                    state: restarted
+            with_items:
+                    - sshd
+                    - ufw
+          - name: reboot machine
+            reboot:
+                    reboot_timeout: 120
+
+
+
+            
+
+
