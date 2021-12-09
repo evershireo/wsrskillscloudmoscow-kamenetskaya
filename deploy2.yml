@@ -1,6 +1,10 @@
 ###PART 2#####
 - hosts: all
+  gather_facts: no
   tasks:
+          - name: change ssh port to 1467
+            set_fact:
+                    ansible_ssh_port: 1467
           - name: install docker py
             pip:
                     name:
