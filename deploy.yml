@@ -57,6 +57,7 @@
                     name:
                             - docker
                             - docker.io
+                            - python3-pip
           - name: create directory
             file:
                     path: /skillcloud-ngsite
@@ -66,6 +67,10 @@
                     src: files/
                     dest: /skillcloud-ngsite/
                     mode: 0777
+          - name: copy template
+            template:
+                    src: files/balance.conf
+                    dest: /skillcloud-ngsite/
           - name: run docker-compose
             shell: /skillcloud-ngsite/docker-compose.sh
           - name: restart ssh and ufw
@@ -75,9 +80,36 @@
             with_items:
                     - sshd
                     - ufw
-          - name: reboot machine, wait 120 s
-            reboot:
-                    reboot_timeout: 120
+                      #          - name: reboot machine, wait 120 s
+                      #            reboot:
+                      #                    reboot_timeout: 120
+          ###PART 2#####
+          - name: install docker py
+            pip:
+                    name:
+                            - docker
+                            - docker-compose
+          - name: build site
+            docker_image:
+                    name: site
+                    dockerfile: /skillcloud-ngsite/Dockerfile-site
+                    path: /skillcloud-ngsite/
+                    state: build
+                    tag: site
+          - name: build balance
+            docker_image:
+                    name: balance
+                    dockerfile: /skillcloud-ngsite/Dockerfile-balance
+                    path: /skillcloud-ngsite/
+                    state: build
+                    tag: balance
+          - name: run docker compose
+            docker_service:
+                    project_src: /skillcloud-ngsite/
+                    project_name: site
+
+
+          
 
 
 
