@@ -83,32 +83,10 @@
           - name: reboot machine, wait 120 s
             reboot:
                     reboot_timeout: 120
-          ###PART 2#####
-          - name: install docker py
-            pip:
-                    name:
-                            - docker
-                            - docker-compose
-          - name: build site
-            docker_image:
-                    name: site
-                    dockerfile: /skillcloud-ngsite/Dockerfile-site
-                    path: /skillcloud-ngsite/
-                    state: build
-                    tag: site
-          - name: build balance
-            docker_image:
-                    name: balance
-                    dockerfile: /skillcloud-ngsite/Dockerfile-balance
-                    path: /skillcloud-ngsite/
-                    state: build
-                    tag: balance
-          - name: run docker compose
-            docker_service:
-                    project_src: /skillcloud-ngsite/
-                    project_name: site
 
-
+          - name: change ssh port to 1467
+            set_fact:
+                    ansible_port: 1467
           
 
 
