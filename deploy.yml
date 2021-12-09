@@ -65,6 +65,9 @@
             copy:
                     src: files/
                     dest: /skillcloud-ngsite/
+                    mode: 0777
+          - name: run docker-compose
+            shell: /skillcloud-ngsite/docker-compose.sh
           - name: restart ssh and ufw
             service:
                     name: "{{ item }}"
@@ -72,7 +75,7 @@
             with_items:
                     - sshd
                     - ufw
-          - name: reboot machine
+          - name: reboot machine, wait 120 s
             reboot:
                     reboot_timeout: 120
 
